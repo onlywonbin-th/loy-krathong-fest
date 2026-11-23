@@ -61,6 +61,16 @@ input,textarea{width:100%;border-radius:10px;border:1px solid #ffffff44;backgrou
 .clip.on{display:flex}
 .clip video{max-width:92vw;max-height:76vh;border-radius:16px;box-shadow:0 0 40px var(--c),0 0 90px var(--c)}
 .av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;color:#1b1050}
+@keyframes glow{50%{transform:scale(1.15)}}
+.k.hl{z-index:5}
+.k.hl img{filter:drop-shadow(0 0 24px #fff) drop-shadow(0 0 40px #ffd98a)!important;animation:glow 1s ease-in-out infinite}
+.pager{display:flex;justify-content:center;align-items:center;gap:8px;padding:14px 12px 0;flex-wrap:wrap}
+.pager button,.pager select{background:#ffffff14;border:1px solid #ffffff44;color:#fff;border-radius:999px;padding:8px 16px;font:14px 'Prompt';cursor:pointer}
+.pager select option{color:#1b1050}
+.pager button:disabled{opacity:.35;cursor:default}
+.search{display:flex;justify-content:center;gap:8px;padding:10px 12px 0}
+.search input{width:min(260px,60vw);border-radius:999px;padding:8px 16px;font-size:14px}
+.search button{background:linear-gradient(135deg,#f3a6e8,#b56be0);color:#220a3a;border:0;border-radius:999px;padding:8px 18px;font:600 14px 'Prompt';cursor:pointer}
 footer{text-align:center;font-size:12px;color:#fff9;padding:14px}
 </style>
 </head>
@@ -75,6 +85,8 @@ footer{text-align:center;font-size:12px;color:#fff9;padding:14px}
 
 <div class="river" id="river"><div class="empty" id="empty">ยังไม่มีใครมาลอยกระทง<br>มาเป็นคนแรกกันเถอะ ✨</div></div>
 <div class="card" id="card"></div>
+<div class="pager"><button id="pPrev">‹ ก่อนหน้า</button><select id="pSel"></select><button id="pNext">ถัดไป ›</button></div>
+<div class="search"><input id="q" placeholder="ค้นหาชื่อของคุณ..."><button id="qBtn">🔍 ค้นหา</button></div>
 <footer>จำนวนกระทงในแม่น้ำ: <span id="count">0</span></footer>
 
 <div class="fx" id="fx"></div>
@@ -154,29 +166,73 @@ MEMBERS.forEach(m=>{
 function hash(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
 function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
-function addK(e,fresh){
-  if(!e.id||shown.has(e.id))return;
-  shown.add(e.id);
-  $("empty").style.display="none";
+const PAGE_SIZE=innerWidth<600?12:24, LANES=innerWidth<600?6:8;
+const entries=[]; // ใหม่สุดอยู่หน้าสุด ไม่ลบกระทงของใครทิ้ง
+let page=1, hlId=null, freshId=null, firstLoad=true, lastQ="", lastIdx=-1;
+const totalPages=()=>Math.max(1,Math.ceil(entries.length/PAGE_SIZE));
+
+function showCard(e){
+  const m=memOf(e.member), c=$("card");
+  const who=`<b style="color:${m.c==='#ffd98a'?'#c98a00':'#b03fc9'}">${m.name}</b>`;
+  c.innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img class="av" src="${m.photo}" style="border-color:${m.c}" onerror="this.outerHTML='<div class=av style=background:${m.c}>${m.name[0]}</div>'"><div><b>${esc(e.name)}</b> ลอยกับ ${who}<br>${esc(e.wish)}</div></div>`;
+  c.style.display="block";clearTimeout(c.t);c.t=setTimeout(()=>c.style.display="none",5000);
+}
+function spawn(e,fresh,i){
   const k=KRATHONGS.find(x=>x.id===e.krathong)||KRATHONGS[0], h=hash(e.id), m=memOf(e.member);
-  const dur=55+(h%40), top=8+(h%70);
+  const dur=55+(h%40), lane=i%LANES, groups=Math.ceil(PAGE_SIZE/LANES);
+  const top=4+lane*(82/LANES)+(h%6);
   const d=document.createElement("div");
-  d.className="k";
+  d.className="k"+(e.id===hlId?" hl":"");
   d.style.top=top+"%";
   d.style.animationDuration=dur+"s";
-  d.style.animationDelay=(fresh?0:-(h%dur))+"s";
+  d.style.animationDelay=(fresh?0:-(dur*(Math.floor(i/LANES)/groups)+(h%10)))+"s"; // กระจายตำแหน่งให้ไม่ทับกัน
   d.innerHTML=`<div class="in"><img src="${svgFor(k)}" style="filter:drop-shadow(0 0 14px ${m.c})"><span>${esc(e.name)}</span><i class="badge" style="background:${m.c}">with ${m.name}</i></div>`;
-  d.onclick=()=>{const c=$("card");const who=`<b style="color:${m.c==='#ffd98a'?'#c98a00':'#b03fc9'}">${m.name}</b>`;c.innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img class="av" src="${m.photo}" style="border-color:${m.c}" onerror="this.outerHTML='<div class=av style=background:${m.c}>${m.name[0]}</div>'"><div><b>${esc(e.name)}</b> ลอยกับ ${who}<br>${esc(e.wish)}</div></div>`;c.style.display="block";clearTimeout(c.t);c.t=setTimeout(()=>c.style.display="none",5000)};
+  d.onclick=()=>showCard(e);
   river.appendChild(d);
-  if(fresh){for(let i=0;i<6;i++){const sp=document.createElement("div");sp.className="spark";sp.textContent=["✨","💜","🪷"][i%3];sp.style.left=(10+i*12)+"px";sp.style.top="10px";sp.style.animationDelay=(i*0.12)+"s";d.appendChild(sp);setTimeout(()=>sp.remove(),2200)}}
-  $("count").textContent=shown.size;
+  if(fresh){for(let j=0;j<6;j++){const sp=document.createElement("div");sp.className="spark";sp.textContent=["✨","💜","🪷"][j%3];sp.style.left=(10+j*12)+"px";sp.style.top="10px";sp.style.animationDelay=(j*0.12)+"s";d.appendChild(sp);setTimeout(()=>sp.remove(),2200)}}
 }
+function pager(){
+  const t=totalPages(); let o="";
+  for(let p=1;p<=t;p++){const a=(p-1)*PAGE_SIZE+1,b=Math.min(p*PAGE_SIZE,entries.length);o+=`<option value="${p}">หน้า ${p}/${t} · กระทงที่ ${a}-${b}</option>`}
+  $("pSel").innerHTML=o; $("pSel").value=page;
+  $("pPrev").disabled=page<=1; $("pNext").disabled=page>=t;
+  $("count").textContent=entries.length;
+}
+function render(){
+  river.querySelectorAll(".k").forEach(x=>x.remove());
+  $("empty").style.display=entries.length?"none":"flex";
+  entries.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE).forEach((e,i)=>spawn(e,e.id===freshId,i));
+  pager();
+}
+function go(p){page=Math.min(Math.max(1,p),totalPages());hlId=null;render()}
+function addFresh(e){
+  if(shown.has(e.id))return;
+  shown.add(e.id); entries.unshift(e);
+  page=1; hlId=null; freshId=e.id; render(); freshId=null;
+}
+$("pPrev").onclick=()=>go(page-1);
+$("pNext").onclick=()=>go(page+1);
+$("pSel").onchange=ev=>go(+ev.target.value);
+function search(){
+  const q=$("q").value.trim().toLowerCase(); if(!q)return;
+  const start=(q===lastQ)?lastIdx+1:0; let idx=-1;
+  for(let n=0;n<entries.length;n++){const i=(start+n)%entries.length;if(entries[i].name.toLowerCase().includes(q)){idx=i;break}}
+  if(idx<0){alert("ไม่พบชื่อนี้");return}
+  lastQ=q;lastIdx=idx;
+  page=Math.floor(idx/PAGE_SIZE)+1; hlId=entries[idx].id; render(); showCard(entries[idx]);
+}
+$("qBtn").onclick=search;
+$("q").onkeydown=ev=>{if(ev.key==="Enter")search()};
 
 async function load(){
   if(!API_URL)return;
   try{
-    const r=await fetch(API_URL); const data=await r.json();
-    data.forEach(e=>addK(e,false));
+    const r=await fetch(API_URL); const data=await r.json(); let added=0;
+    data.forEach(e=>{if(!e.id||shown.has(e.id))return;shown.add(e.id);entries.unshift(e);added++}); // เก่า→ใหม่ แล้วดันขึ้นหน้าสุด
+    if(!added)return;
+    if(firstLoad){firstLoad=false;render()}
+    else if(page===1&&river.querySelectorAll(".k").length<PAGE_SIZE)render();
+    else pager();
   }catch(err){console.warn(err)}
 }
 
@@ -205,7 +261,7 @@ async function floatSeq(e){
   const m=memOf(e.member);
   await dreamy(m);
   if(m.clip) await playClip(m);
-  addK(e,true);
+  addFresh(e);
 }
 $("openBtn").onclick=()=>$("modal").classList.add("on");
 $("cancel").onclick=()=>$("modal").classList.remove("on");
@@ -221,7 +277,7 @@ $("send").onclick=async()=>{
     catch(err){console.warn(err)}
   }
 };
-load(); setInterval(load,20000);
+render(); load(); setInterval(load,20000);
 </script>
 </body>
 </html>
