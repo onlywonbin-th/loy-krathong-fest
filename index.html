@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ลอยกระทง | #WONBIN x #Safeguard</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#fff;--pink:#f3a6e8;--gold:#ffd98a}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Prompt',sans-serif;color:var(--ink);background:linear-gradient(#0b0630 0%,#2a1050 38%,#10205a 60%,#06113a 100%);min-height:100vh;overflow-x:hidden}
+.stars{position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 20% 15%,#fff,transparent),radial-gradient(1.5px 1.5px at 70% 10%,#fff,transparent),radial-gradient(2px 2px at 85% 30%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 40% 28%,#fff,transparent),radial-gradient(1.5px 1.5px at 8% 40%,#fff,transparent)}
+header{text-align:center;padding:28px 16px 8px}
+.tag{font-size:14px;letter-spacing:.08em;color:var(--gold)}
+h1{margin:6px 0;font-size:clamp(26px,6vw,44px);font-weight:600}
+h1 b{color:var(--pink)}
+.sub{font-weight:300;font-size:clamp(14px,3.5vw,18px)}
+.sub i{font-style:normal;color:var(--pink);font-weight:600}
+.btn{display:block;margin:18px auto 0;background:linear-gradient(135deg,#f3a6e8,#b56be0);color:#220a3a;border:0;border-radius:999px;padding:12px 28px;font:600 16px 'Prompt';cursor:pointer;box-shadow:0 4px 20px #f3a6e866}
+.river{position:relative;height:56vh;min-height:340px;margin-top:20px;overflow:hidden;background:linear-gradient(#0e2a6b,#0a1c52 60%,#06113a);border-top:2px solid #6fa4ff55}
+.river::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 22px,#ffffff0d 22px 24px);animation:wave 6s linear infinite}
+@keyframes wave{to{background-position:0 48px}}
+.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#cfe0ffcc;font-weight:300}
+.k{position:absolute;left:0;width:96px;cursor:pointer;animation:drift linear infinite;will-change:transform}
+@keyframes drift{from{transform:translateX(-140px)}to{transform:translateX(calc(100vw + 40px))}}
+.k .in{animation:bob 3s ease-in-out infinite;text-align:center}
+@keyframes bob{50%{transform:translateY(-6px) rotate(2deg)}}
+.k img{width:100%;display:block;filter:drop-shadow(0 0 12px #ffcf6a99)}
+.k span{display:block;font-size:12px;margin-top:-4px;text-shadow:0 1px 4px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#fff;color:#2a1050;border-radius:16px;padding:14px 20px;max-width:90vw;width:340px;box-shadow:0 8px 30px #0008;display:none;z-index:20}
+.card b{color:#b03fc9}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+.modal.on{display:flex}
+.box{background:#1b1050;border:1px solid #f3a6e855;border-radius:20px;padding:22px;width:100%;max-width:440px;max-height:92vh;overflow:auto}
+.box h2{margin:0 0 12px}
+label{font-size:14px;display:block;margin:12px 0 4px;color:var(--gold)}
+input,textarea{width:100%;border-radius:10px;border:1px solid #ffffff44;background:#ffffff14;color:#fff;padding:10px;font:16px 'Prompt'}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pick button{background:#ffffff10;border:2px solid transparent;border-radius:12px;padding:6px;cursor:pointer;color:#fff;font:12px 'Prompt'}
+.pick button.sel{border-color:var(--pink);background:#f3a6e822}
+.pick img{width:100%}
+.row{display:flex;gap:8px;margin-top:16px}
+.row .btn{margin:0;flex:1}
+.ghost{background:transparent;border:1px solid #fff5;color:#fff;box-shadow:none}
+.mem{display:flex;flex-wrap:wrap;gap:8px}
+.mem button{border:2px solid var(--c);background:transparent;color:#fff;border-radius:999px;padding:6px 14px;font:14px 'Prompt';cursor:pointer}
+.mem button.sel{background:var(--c);color:#1b1050;font-weight:600}
+.badge{display:inline-block;font-size:10px;border-radius:999px;padding:1px 8px;margin-top:2px;color:#1b1050;font-weight:600}
+.spark{position:absolute;pointer-events:none;font-size:18px;animation:up 1.6s ease-out forwards}
+@keyframes up{to{transform:translateY(-70px);opacity:0}}
+@keyframes pulse{50%{transform:scale(1.25);opacity:.9}}
+@keyframes rise{from{transform:translateY(105vh) scale(.6);opacity:0}15%{opacity:1}to{transform:translateY(-10vh) scale(1.2);opacity:0}}
+@keyframes txt{0%,100%{opacity:.4}50%{opacity:1}}
+.fx{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;flex-direction:column;background:#0b0630f2;overflow:hidden;text-align:center}
+.fx.on{display:flex}
+.fx .orb{position:absolute;border-radius:50%;filter:blur(55px);opacity:.55;background:var(--c);animation:pulse 2.4s ease-in-out infinite}
+.fx .sp{position:absolute;bottom:0;animation:rise linear infinite;pointer-events:none}
+.fx .face{position:relative;width:120px;height:120px;border-radius:50%;background:var(--c);object-fit:cover;box-shadow:0 0 40px var(--c),0 0 90px var(--c);animation:pulse 2s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-size:48px;color:#1b1050;font-weight:600}
+.fx p{position:relative;margin:22px 0 0;font-size:clamp(18px,5vw,24px);text-shadow:0 0 14px var(--c),0 0 30px var(--c);animation:txt 1.8s ease-in-out infinite}
+.clip{position:fixed;inset:0;z-index:50;background:#000d;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:12px}
+.clip.on{display:flex}
+.clip video{max-width:92vw;max-height:76vh;border-radius:16px;box-shadow:0 0 40px var(--c),0 0 90px var(--c)}
+.av{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid;flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;color:#1b1050}
+footer{text-align:center;font-size:12px;color:#fff9;padding:14px}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<header>
+  <div class="tag">#WONBIN x #Safeguard Brand Ambassador</div>
+  <h1><b>Won</b>derful, only for you</h1>
+  <div class="sub">ลอยกระทงออนไลน์ · <i>25/11/2026 11:32</i></div>
+  <button class="btn" id="openBtn">🪷 ลอยกระทงเลย</button>
+</header>
+
+<div class="river" id="river"><div class="empty" id="empty">ยังไม่มีใครมาลอยกระทง<br>มาเป็นคนแรกกันเถอะ ✨</div></div>
+<div class="card" id="card"></div>
+<footer>จำนวนกระทงในแม่น้ำ: <span id="count">0</span></footer>
+
+<div class="fx" id="fx"></div>
+<div class="clip" id="clip"><video id="vid" playsinline controls></video><button class="btn ghost" id="skip" style="margin:0">ข้าม ›</button></div>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <h2>ลอยกระทง 🪷</h2>
+    <label>ชื่อผู้ร่วมงาน</label>
+    <input id="name" maxlength="30" placeholder="ชื่อของคุณ">
+    <label>คำอวยพร</label>
+    <textarea id="wish" rows="3" maxlength="120" placeholder="เขียนคำอวยพรถึงวอนบิน..."></textarea>
+    <label>ลอยกระทงกับใคร 💜</label>
+    <div class="mem" id="mem"></div>
+    <label>เลือกกระทง</label>
+    <div class="pick" id="pick"></div>
+    <div class="row">
+      <button class="btn ghost" id="cancel">ยกเลิก</button>
+      <button class="btn" id="send">ลอยกระทง</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== ตั้งค่า ======
+// วาง URL ของ Google Apps Script (Web app) ตรงนี้ ถ้าเว้นว่างจะเป็นโหมดทดลอง (ไม่บันทึกลง sheet)
+const API_URL = "";
+// เพิ่มรูปกระทง PNG ของตัวเองได้ที่นี่ เช่น {id:"k7", name:"กระทงดอกบัว", src:"img/krathong7.png"}
+// ถ้าไม่ใส่ src จะใช้ภาพ SVG ที่สร้างอัตโนมัติจาก c1/c2/leaf
+const KRATHONGS = [
+  {id:"k1",name:"ออลเมมออลใจ",src:"img/kathongall.png"},
+  {id:"k2",name:"แฟชั่นนิสต้าหนูแดง",src:"img/kathongsho.png"},
+  {id:"k3",name:"เจ้าชายเกี๊ยว",src:"img/kathongdol.png"},
+  {id:"k4",name:"กวางกล้ามโต",src:"img/kathongbum.png"},
+  {id:"k5",name:"ร็อกสตาร์แห่งย่าน",src:"img/kathongton.png"},
+  {id:"k6",name:"พลทหารตลบยอง",src:"img/kathongtol.png"},
+  {id:"k7",name:"เทวดาตัวน้อย(?)",src:"img/kathongmeong.png"}
+];
+// photo = รูปเล็กตอนกดกระทง, clip = คลิปสั้นตอนลอย (ใส่ไฟล์ในโฟลเดอร์ media/ ถ้าไม่มีไฟล์จะข้ามให้อัตโนมัติ)
+const MEMBERS = [
+  {id:"all",name:"RIIZE ทุกคน",c:"#ffd98a",photo:"media/riize.jpg",clip:"media/riize.mp4"},
+  {id:"shotaro",name:"Shotaro",c:"#ff9fb2",photo:"media/shotaro.jpg",clip:"media/shotaro.mp4"},
+  {id:"eunseok",name:"Eunseok",c:"#9fd3ff",photo:"media/eunseok.jpg",clip:"media/eunseok.mp4"},
+  {id:"sungchan",name:"Sungchan",c:"#b6f0a8",photo:"media/sungchan.jpg",clip:"media/sungchan.mp4"},
+  {id:"wonbin",name:"Wonbin",c:"#f3a6e8",photo:"media/wonbin.jpg",clip:"media/wonbin.mp4"},
+  {id:"sohee",name:"Sohee",c:"#ffc98a",photo:"media/sohee.jpg",clip:"media/sohee.mp4"},
+  {id:"anton",name:"Anton",c:"#c9b3ff",photo:"media/anton.jpg",clip:"media/anton.mp4"}
+];
+// =====================
+function svgFor(k){
+  if(k.src) return k.src;
+  let p="";
+  [-60,-30,0,30,60].forEach(a=>p+=`<ellipse cx="60" cy="48" rx="11" ry="26" fill="${k.c1}" transform="rotate(${a} 60 74)"/>`);
+  [-45,-15,15,45].forEach(a=>p+=`<ellipse cx="60" cy="54" rx="11" ry="22" fill="${k.c2}" transform="rotate(${a} 60 76)"/>`);
+  const s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100"><ellipse cx="60" cy="80" rx="52" ry="14" fill="${k.leaf}"/><ellipse cx="60" cy="76" rx="44" ry="9" fill="#ffffff33"/>${p}<rect x="58" y="22" width="4" height="22" rx="2" fill="#fff6d6"/><ellipse cx="60" cy="16" rx="4" ry="7" fill="#ffb703"/></svg>`;
+  return "data:image/svg+xml;utf8,"+encodeURIComponent(s);
+}
+const $=id=>document.getElementById(id);
+const river=$("river"), shown=new Set(); let selected=KRATHONGS[0].id, selMember="wonbin";
+const memOf=id=>MEMBERS.find(m=>m.id===id)||MEMBERS[0];
+
+KRATHONGS.forEach((k,i)=>{
+  const b=document.createElement("button");
+  b.innerHTML=`<img src="${svgFor(k)}"><br>${k.name}`;
+  if(i===0)b.classList.add("sel");
+  b.onclick=()=>{selected=k.id;document.querySelectorAll(".pick button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")};
+  $("pick").appendChild(b);
+});
+
+MEMBERS.forEach(m=>{
+  const b=document.createElement("button");
+  b.textContent=m.name; b.style.setProperty("--c",m.c);
+  if(m.id===selMember)b.classList.add("sel");
+  b.onclick=()=>{selMember=m.id;document.querySelectorAll(".mem button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")};
+  $("mem").appendChild(b);
+});
+function hash(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function addK(e,fresh){
+  if(!e.id||shown.has(e.id))return;
+  shown.add(e.id);
+  $("empty").style.display="none";
+  const k=KRATHONGS.find(x=>x.id===e.krathong)||KRATHONGS[0], h=hash(e.id), m=memOf(e.member);
+  const dur=55+(h%40), top=8+(h%70);
+  const d=document.createElement("div");
+  d.className="k";
+  d.style.top=top+"%";
+  d.style.animationDuration=dur+"s";
+  d.style.animationDelay=(fresh?0:-(h%dur))+"s";
+  d.innerHTML=`<div class="in"><img src="${svgFor(k)}" style="filter:drop-shadow(0 0 14px ${m.c})"><span>${esc(e.name)}</span><i class="badge" style="background:${m.c}">with ${m.name}</i></div>`;
+  d.onclick=()=>{const c=$("card");const who=`<b style="color:${m.c==='#ffd98a'?'#c98a00':'#b03fc9'}">${m.name}</b>`;c.innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img class="av" src="${m.photo}" style="border-color:${m.c}" onerror="this.outerHTML='<div class=av style=background:${m.c}>${m.name[0]}</div>'"><div><b>${esc(e.name)}</b> ลอยกับ ${who}<br>${esc(e.wish)}</div></div>`;c.style.display="block";clearTimeout(c.t);c.t=setTimeout(()=>c.style.display="none",5000)};
+  river.appendChild(d);
+  if(fresh){for(let i=0;i<6;i++){const sp=document.createElement("div");sp.className="spark";sp.textContent=["✨","💜","🪷"][i%3];sp.style.left=(10+i*12)+"px";sp.style.top="10px";sp.style.animationDelay=(i*0.12)+"s";d.appendChild(sp);setTimeout(()=>sp.remove(),2200)}}
+  $("count").textContent=shown.size;
+}
+
+async function load(){
+  if(!API_URL)return;
+  try{
+    const r=await fetch(API_URL); const data=await r.json();
+    data.forEach(e=>addK(e,false));
+  }catch(err){console.warn(err)}
+}
+
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function dreamy(m){
+  const fx=$("fx"); fx.style.setProperty("--c",m.c);
+  let h='';
+  for(let i=0;i<4;i++)h+=`<div class="orb" style="width:${200+i*60}px;height:${200+i*60}px;left:${10+i*24}%;top:${15+(i%2)*40}%;animation-delay:${i*.5}s"></div>`;
+  for(let i=0;i<28;i++)h+=`<div class="sp" style="left:${Math.random()*100}%;font-size:${12+Math.random()*16}px;animation-duration:${3+Math.random()*3}s;animation-delay:${-Math.random()*4}s">${["✨","💜","🪷","·","✦"][i%5]}</div>`;
+  h+=`<img class="face" src="${m.photo}" onerror="this.outerHTML='<div class=face>${m.name[0]}</div>'"><p>กำลังลอยกระทงกับ ${m.name} ✨</p>`;
+  fx.innerHTML=h; fx.classList.add("on");
+  await wait(2800); fx.classList.remove("on");
+}
+function playClip(m){
+  return new Promise(res=>{
+    const box=$("clip"), v=$("vid"); let done=false;
+    const end=()=>{if(done)return;done=true;v.pause();v.removeAttribute("src");v.load();box.classList.remove("on");res()};
+    v.onended=end; v.onerror=end; $("skip").onclick=end;
+    box.style.setProperty("--c",m.c); v.src=m.clip;
+    v.oncanplay=()=>{box.classList.add("on")};
+    v.play().catch(()=>{v.muted=true;v.play().catch(end)});
+    setTimeout(()=>{if(!done&&!box.classList.contains("on"))end()},4000); // ไม่มีไฟล์/โหลดช้า ข้ามไป
+  });
+}
+async function floatSeq(e){
+  const m=memOf(e.member);
+  await dreamy(m);
+  if(m.clip) await playClip(m);
+  addK(e,true);
+}
+$("openBtn").onclick=()=>$("modal").classList.add("on");
+$("cancel").onclick=()=>$("modal").classList.remove("on");
+$("send").onclick=async()=>{
+  const name=$("name").value.trim(), wish=$("wish").value.trim();
+  if(!name||!wish){alert("กรอกชื่อและคำอวยพรก่อนนะ");return}
+  const e={id:Date.now()+"-"+Math.random().toString(36).slice(2,7),name,wish,krathong:selected,member:selMember};
+  $("modal").classList.remove("on");
+  $("name").value="";$("wish").value="";
+  floatSeq(e);
+  if(API_URL){
+    try{await fetch(API_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(e)})}
+    catch(err){console.warn(err)}
+  }
+};
+load(); setInterval(load,20000);
+</script>
+</body>
+</html>
