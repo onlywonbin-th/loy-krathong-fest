@@ -213,11 +213,13 @@ function addFresh(e){
 $("pPrev").onclick=()=>go(page-1);
 $("pNext").onclick=()=>go(page+1);
 $("pSel").onchange=ev=>go(+ev.target.value);
+// ทำให้ค้นหาเจอง่ายขึ้น: ไม่สนตัวพิมพ์เล็ก/ใหญ่ ช่องว่าง วรรณยุกต์ และรูปแบบ Unicode ต่างกัน
+const norm=t=>String(t==null?"":t).normalize("NFKC").toLowerCase().replace(/[\s\u200B-\u200D\u2060\uFEFF\u0E48-\u0E4C]/g,"");
 function search(){
-  const q=$("q").value.trim().toLowerCase(); if(!q)return;
+  const q=norm($("q").value); if(!q)return;
   const start=(q===lastQ)?lastIdx+1:0; let idx=-1;
-  for(let n=0;n<entries.length;n++){const i=(start+n)%entries.length;if(entries[i].name.toLowerCase().includes(q)){idx=i;break}}
-  if(idx<0){alert("ไม่พบชื่อนี้");return}
+  for(let n=0;n<entries.length;n++){const i=(start+n)%entries.length;if(norm(entries[i].name).includes(q)||norm(entries[i].wish).includes(q)){idx=i;break}}
+  if(idx<0){alert("ไม่พบชื่อนี้ (ลองพิมพ์สั้นลง หรือรอสักครู่ให้ข้อมูลอัปเดต)");return}
   lastQ=q;lastIdx=idx;
   page=Math.floor(idx/PAGE_SIZE)+1; hlId=entries[idx].id; render(); showCard(entries[idx]);
 }
