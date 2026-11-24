@@ -98,7 +98,7 @@ footer{text-align:center;font-size:12px;color:#fff9;padding:14px}
     <label>ชื่อผู้ร่วมงาน</label>
     <input id="name" maxlength="30" placeholder="ชื่อของคุณ">
     <label>คำอวยพร</label>
-    <textarea id="wish" rows="3" maxlength="120" placeholder="เขียนคำอวยพรถึงวอนบิน..."></textarea>
+    <textarea id="wish" rows="3" maxlength="120" placeholder="เขียนคำอวยพร..."></textarea>
     <label>ลอยกระทงกับใคร 💜</label>
     <div class="mem" id="mem"></div>
     <label>เลือกกระทง</label>
@@ -256,7 +256,7 @@ function playClip(m){
     box.style.setProperty("--c",m.c); v.src=m.clip;
     v.oncanplay=()=>{box.classList.add("on")};
     v.play().catch(()=>{v.muted=true;v.play().catch(end)});
-    setTimeout(()=>{if(!done&&!box.classList.contains("on"))end()},4000); // ไม่มีไฟล์/โหลดช้า ข้ามไป
+    setTimeout(()=>{if(!done&&!box.classList.contains("on"))end()},8000); // ไม่มีไฟล์/โหลดช้า ข้ามไป
   });
 }
 async function floatSeq(e){
