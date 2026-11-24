@@ -166,7 +166,7 @@ MEMBERS.forEach(m=>{
 function hash(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
 function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
-const PAGE_SIZE=innerWidth<600?12:24, LANES=innerWidth<600?6:8;
+const PAGE_SIZE=innerWidth<600?18:40, LANES=innerWidth<600?7:10;
 const entries=[]; // ใหม่สุดอยู่หน้าสุด ไม่ลบกระทงของใครทิ้ง
 let page=1, hlId=null, freshId=null, firstLoad=true, lastQ="", lastIdx=-1;
 const totalPages=()=>Math.max(1,Math.ceil(entries.length/PAGE_SIZE));
